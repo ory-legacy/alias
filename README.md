@@ -24,7 +24,7 @@ Content-Type: application/json
   key: "home",
   value: "874192475123",
   type: "string"
-  created: 1384964511
+  created: "1994-11-05T13:15:30Z"
 }
 ```
 

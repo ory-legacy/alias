@@ -82,9 +82,11 @@ Values:
 
 Returns:
 ```
+ {
   item: item
   error: bool,
   errorMessage: string
+}
 ```
 
 ### Remove a specific map:

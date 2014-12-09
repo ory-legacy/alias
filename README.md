@@ -11,7 +11,6 @@ Request:
 ```
 GET /map/uri?key=home HTTP/1.1
 HOST: api.baldur.io
-app-public-token: ba64ofk10fkk
 ```
 
 Response:

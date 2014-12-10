@@ -19,20 +19,28 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  id: 1234,
   key: "home",
   value: "874192475123",
-  type: "string"
   created: "1994-11-05T13:15:30Z"
 }
 ```
 
-## API
-
-All requests need to contain your app token in the header.
-
+Request:
 ```
-app-public-token: you-token
+GET /map/uid?key=92475123 HTTP/1.1
+HOST: api.baldur.io
+```
+
+Response:
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  key: "92475123",
+  value: "about",
+  created: "1994-11-05T13:15:30Z"
+}
 ```
 
 ### The map model
@@ -57,15 +65,6 @@ item
 ```
 
 Both created and modified are formatted in [UTC datetime](http://www.w3.org/TR/NOTE-datetime): `1994-11-05T13:15:30Z`
-
-### Searches keys by a value
-
-`GET /maps/:type?value=uri_encoded_value`
-
-Returns:
-```
-[item1, item2, ...]
-```
 
 ### Store a new map
 

@@ -1,7 +1,7 @@
 alias
 ======
 
-Stores human readable aliases (a paths) for identifiers. `ca64bfo` could be represented via `/about/team`.  
+Stores human readable aliases (url paths) for identifiers. `ca64bfo` could be represented via `/about/team`.  
 Each identifier (`ca64bfo`) may have multiple paths. To distinguish between them, **alias** stores a timestamp for each entry.
 
 ## Examples

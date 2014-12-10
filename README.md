@@ -1,100 +1,59 @@
-mapper
+alias
 ======
 
-Provides types containing maps over the network. Keys within a type are unique whilst values are not.
+Stores human readable aliases (a paths) for identifiers. `ca64bfo` could be represented via `/about/team`.  
+Each identifier (`ca64bfo`) may have multiple paths. To distinguish between them, **alias** stores a timestamp for each entry.
 
-## Concept
+## Examples
 
-The primary use case of this app is to provide URI to ID mapping, e.g.:
+The following examples will give you an API overview:
 
-Request:
+### Receiving
+
+To receive an item by it's path, create a request which contains an uri_encoded string:
 ```
-GET /map/uri?key=home HTTP/1.1
-HOST: api.baldur.io
-```
-
-Response:
-```
-HTTP/1.1 200 OK
-Content-Type: application/json
-
-{
-  key: "home",
-  value: "874192475123",
-  created: "1994-11-05T13:15:30Z"
-}
+GET /%2Fabout%2Fteam HTTP/1.1
 ```
 
-Request:
-```
-GET /map/uid?key=92475123 HTTP/1.1
-HOST: api.baldur.io
-```
-
-Response:
+The response returns a JSON string which contains one item and all of its information:
 ```
 HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  key: "92475123",
-  value: "about",
+  key: "/about/team",
+  value: "tx86bb",
   created: "1994-11-05T13:15:30Z"
 }
 ```
 
-### The map model
-
+To receive an items aliases, create a request which uses a `value` parameter containing an uri_encoded string:
 ```
-var item = {
-  key: string,
-  value: string,
-  created: int
-}
+GET /?value=tx86bb HTTP/1.1
 ```
 
-Both created and modified are unix timestamps.
-
-### Get a map's value
-
-URL: `GET /maps/:type?key=uri_encoded_key`
-
-Returns:
+The response is formatted in JSON and returns the latest entry as wel as an ordered (order by created desc) list of items:
 ```
-item
-```
+HTTP/1.1 200 OK
+Content-Type: application/json
 
-Both created and modified are formatted in [UTC datetime](http://www.w3.org/TR/NOTE-datetime): `1994-11-05T13:15:30Z`
-
-### Store a new map
-
-Request: `POST /maps/:type`
-
-Values:
-```
 {
-  key: string,
-  value: string
+  "key": "/about/team",
+  "value": "tx86bb",
+  "created": "2014-11-05T13:15:30Z"
+  "list": [
+    {
+      "key": "/about/team",
+      "value": "tx86bb",
+      "created": "2014-11-05T13:15:30Z"
+    },
+    {
+      "key": "/team",
+      "value": "tx86bb",
+      "created": "1994-11-05T13:15:30Z"
+    },
+  ]
 }
 ```
 
-Returns:
-```
- {
-  item: item
-  error: bool,
-  errorMessage: string
-}
-```
-
-### Remove a specific map:
-
-Request: `DELETE /maps/:type?key=uri_encoded_key`
-
-Returns:
-```
-{
-  error: bool,
-  errorMessage: string
-}
-```
+If no element is found, an 404 response containing `{message: string}` will be returned.

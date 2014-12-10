@@ -21,9 +21,9 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  key: "/about/team",
-  value: "tx86bb",
-  created: "1994-11-05T13:15:30Z"
+  "alias": "/about/team",
+  "id": "tx86bb",
+  "created": "1994-11-05T13:15:30Z"
 }
 ```
 
@@ -38,22 +38,34 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "key": "/about/team",
-  "value": "tx86bb",
+  "alias": "/about/team",
+  "id": "tx86bb",
   "created": "2014-11-05T13:15:30Z"
   "list": [
     {
-      "key": "/about/team",
-      "value": "tx86bb",
+      "alias": "/about/team",
+      "id": "tx86bb",
       "created": "2014-11-05T13:15:30Z"
     },
     {
-      "key": "/team",
-      "value": "tx86bb",
+      "alias": "/team",
+      "id": "tx86bb",
       "created": "1994-11-05T13:15:30Z"
     },
   ]
 }
 ```
 
-If no element is found, an 404 response containing `{message: string}` will be returned.
+If no element is found, an 404 response containing `{"error": "string"}` will be returned.
+
+### Creating
+
+To persist a new entry, create a POST request `POST / HTTP/1.1` containing two parameters:
+```
+{
+  "alias": "/about/team"
+  "id": "zufa9123498f"
+}
+```
+
+The result will be either an empty (`{}`) 200 response or a 500 containing an error message (`{"error": "string"}`).

@@ -10,9 +10,11 @@ The following examples will give you an API overview:
 
 ### Receiving
 
-To receive an item by it's path, create a request which contains an uri_encoded string:
+To receive an item by it's path, create a request which contains the uri. The uri can be uri_encoded or raw:
 ```
 GET /%2Fabout%2Fteam HTTP/1.1
+
+GET //about/team HTTP/1.1
 ```
 
 The response returns a JSON string which contains one item and all of its information:
@@ -68,4 +70,4 @@ To persist a new entry, create a POST request `POST / HTTP/1.1` containing two p
 }
 ```
 
-The result will be either an empty (`{}`) 200 response or a 500 containing an error message (`{"error": "string"}`).
+The result will be either an empty (`{}`) 200 response or a 500 containing an error message.

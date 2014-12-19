@@ -78,6 +78,41 @@ func getHandler(db *bolt.DB) http.HandlerFunc {
 
 func findHandler(db *bolt.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		params := mux.Vars(r)
+		id := params["id"]
+
+		db.View(func(tx *bolt.Tx) error {
+			c := tx.Cursor()
+			var resp []entry
+
+			for k, _ := c.First(); k != nil; k, _ = c.Next() {
+				b := tx.Bucket(k)
+
+				c, _ := binary.Varint(b.Get([]byte("created")))
+				u, _ := binary.Varint(b.Get([]byte("updated")))
+				i, _ := binary.Varint(b.Get([]byte("id")))
+
+				w.Write(b.Get([]byte("id")))
+				if string(b.Get([]byte("id"))) == id {
+					e := entry{string(b.Get([]byte("url"))), i, c, u}
+					resp = append(resp, e)
+				}
+			}
+
+			/*
+			js, err := json.Marshal(resp)
+
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return err
+			}
+
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(js)
+			*/
+
+			return nil
+		})
 	}
 }
 

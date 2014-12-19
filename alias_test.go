@@ -20,8 +20,8 @@ func TestReadReturns404(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	defer db.Close()
 	defer os.Remove("test.db")
+	defer db.Close()
 
 	recorder := readRequest(t, db, "foo%2Fbar")
 
@@ -35,8 +35,8 @@ func TestWrite(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	defer db.Close()
 	defer os.Remove("test.db")
+	defer db.Close()
 
 	recorder := writeRequest(t, db, `{"url": "foo/bar", "id": 123}`)
 
@@ -51,8 +51,8 @@ func TestReadEncodedWithMultipleDataSets(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	defer db.Close()
 	defer os.Remove("test.db")
+	defer db.Close()
 
 	recorder := writeRequest(t, db, `{"url": "foo/bar", "id": 123}`)
 	assert.Equal(t, 200, recorder.Code)
@@ -77,8 +77,8 @@ func TestReadNotEncoded(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	defer db.Close()
 	defer os.Remove("test.db")
+	defer db.Close()
 
 	recorder := writeRequest(t, db, `{"url": "foo/bar", "id": 123}`)
 	assert.Equal(t, 200, recorder.Code)
@@ -96,19 +96,31 @@ func TestFind(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	defer db.Close()
 	defer os.Remove("test.db")
+	defer db.Close()
 
 	recorder := writeRequest(t, db, `{"url": "foo/bar", "id": 123}`)
 	assert.Equal(t, 200, recorder.Code)
-	recorder = writeRequest(t, db, `{"url": "foo/bar/different", "id": 123}`)
+	recorder = writeRequest(t, db, `{"url": "foo/bar/baz", "id": 123}`)
 	assert.Equal(t, 200, recorder.Code)
 	recorder = writeRequest(t, db, `{"url": "bar/foo", "id": 124}`)
 	assert.Equal(t, 200, recorder.Code)
 
 	recorder = findRequest(t, db, "?id=123")
+
+	t.Log(recorder.Body.String())
+
 	assert.Equal(t, 200, recorder.Code)
 	assert.NotEmpty(t, recorder.Body.String())
+
+	var e [2]entry
+	decoder := json.NewDecoder(recorder.Body)
+	err = decoder.Decode(&e)
+
+	assert.Equal(t, 123, e[0].Id)
+	assert.Equal(t, 123, e[1].Id)
+	assert.Equal(t, "foo/bar", e[0].Url)
+	assert.Equal(t, "foo/bar/baz", e[1].Url)
 }
 
 func testGetResult(t *testing.T, recorder *httptest.ResponseRecorder, id int64, url string){
